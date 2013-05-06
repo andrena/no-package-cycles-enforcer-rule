@@ -1,4 +1,4 @@
-package com.benromberg.packagecycles;
+package com.github.benromberg.nopackagecycles;
 
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaClass;

@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.benromberg</groupId>
-    <artifactId>package-cycles-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.github.benromberg</groupId>
+    <artifactId>no-package-cycles-enforcer-rule</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <api.version>1.0</api.version>
