@@ -16,16 +16,19 @@ import de.andrena.tools.nopackagecycles.CollectionOutput.Appender;
 
 public class PackageCycleOutput {
 
-	private final Collection<JavaPackage> packages;
+	private List<JavaPackage> packages;
 	private StringBuilder output;
 
-	public PackageCycleOutput(Collection<JavaPackage> packages) {
+	public PackageCycleOutput(List<JavaPackage> packages) {
 		this.packages = packages;
 	}
 
 	public String getOutput() {
 		output = new StringBuilder();
-		for (JavaPackage javaPackage : packages) {
+		orderPackagesByName();
+		while (!packages.isEmpty()) {
+			JavaPackage javaPackage = packages.get(0);
+			packages.remove(0);
 			if (javaPackage.containsCycle()) {
 				appendOutputForPackage(javaPackage);
 			}
@@ -33,9 +36,15 @@ public class PackageCycleOutput {
 		return output.toString();
 	}
 
+	private void orderPackagesByName() {
+		List<JavaPackage> packageList = new ArrayList<JavaPackage>(packages);
+		orderByPackageName(packageList);
+		packages = packageList;
+	}
+
 	private void appendOutputForPackage(final JavaPackage javaPackage) {
 		output.append("\n").append(javaPackage.getName()).append(" has cyclic dependency to: ");
-		joinCollection(getCyclicPackages(javaPackage), output, new Appender<JavaPackage>() {
+		joinCollection(getAndPrependCyclicPackages(javaPackage), output, new Appender<JavaPackage>() {
 			public void append(JavaPackage cyclicPackage) {
 				appendOutputForCyclicPackage(javaPackage, cyclicPackage);
 			}
@@ -78,20 +87,37 @@ public class PackageCycleOutput {
 		return dependentClasses;
 	}
 
-	private List<JavaPackage> getCyclicPackages(JavaPackage javaPackage) {
+	private List<JavaPackage> getAndPrependCyclicPackages(JavaPackage javaPackage) {
 		List<JavaPackage> cyclicPackages = new ArrayList<JavaPackage>();
 		javaPackage.collectAllCycles(cyclicPackages);
 		removeSelfAndDuplications(javaPackage, cyclicPackages);
-		return orderByPackageName(cyclicPackages);
+		orderByPackageName(cyclicPackages);
+		prependPackages(cyclicPackages);
+		return cyclicPackages;
 	}
 
-	private List<JavaPackage> orderByPackageName(List<JavaPackage> cyclicPackages) {
+	private void prependPackages(List<JavaPackage> cyclicPackages) {
+		List<JavaPackage> pendingCyclicPackages = getPendingCyclicPackages(cyclicPackages);
+		packages.removeAll(pendingCyclicPackages);
+		packages.addAll(0, pendingCyclicPackages);
+	}
+
+	private List<JavaPackage> getPendingCyclicPackages(List<JavaPackage> cyclicPackages) {
+		List<JavaPackage> pendingCyclicPackages = new ArrayList<JavaPackage>();
+		for (JavaPackage cyclicPackage : cyclicPackages) {
+			if (packages.contains(cyclicPackage)) {
+				pendingCyclicPackages.add(cyclicPackage);
+			}
+		}
+		return pendingCyclicPackages;
+	}
+
+	private void orderByPackageName(List<JavaPackage> cyclicPackages) {
 		Collections.sort(cyclicPackages, new Comparator<JavaPackage>() {
 			public int compare(JavaPackage package1, JavaPackage package2) {
 				return package1.getName().compareTo(package2.getName());
 			}
 		});
-		return cyclicPackages;
 	}
 
 	private void removeSelfAndDuplications(JavaPackage javaPackage, List<JavaPackage> cyclicPackages) {

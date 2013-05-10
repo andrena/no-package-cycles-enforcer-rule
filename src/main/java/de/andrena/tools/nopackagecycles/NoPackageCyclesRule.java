@@ -2,6 +2,7 @@ package de.andrena.tools.nopackagecycles;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import jdepend.framework.JDepend;
@@ -56,7 +57,7 @@ public class NoPackageCyclesRule implements EnforcerRule {
 	private String getPackageCycles(JDepend jdepend) {
 		@SuppressWarnings("unchecked")
 		Collection<JavaPackage> packages = jdepend.getPackages();
-		return new PackageCycleOutput(packages).getOutput();
+		return new PackageCycleOutput(new ArrayList<JavaPackage>(packages)).getOutput();
 	}
 
 	private boolean checkIsNecessary(MavenProject project, File classesDir) {
