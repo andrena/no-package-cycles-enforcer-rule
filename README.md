@@ -1,6 +1,8 @@
 [![Build Status](https://buildhive.cloudbees.com/job/andrena/job/no-package-cycles-enforcer-rule/badge/icon)](https://buildhive.cloudbees.com/job/andrena/job/no-package-cycles-enforcer-rule/)
 
-Usage: Build and add the following plugin:
+This Maven Enforcer Rule checks your project for package cycles. It fails the build if any package cycle is found, showing you the packages and classes involved in the cycle.
+
+Usage: Add the following plugin to your POM:
 
 ```
 <plugin>
@@ -19,7 +21,7 @@ Usage: Build and add the following plugin:
 			<goals>
 				<goal>enforce</goal>
 			</goals>
-			<phase>verify</phase>
+			<phase>compile</phase>
 			<configuration>
 				<rules>
 					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule" />
@@ -30,6 +32,7 @@ Usage: Build and add the following plugin:
 </plugin>
 ```
 
-See also: original version at http://stackoverflow.com/questions/3416547/maven-jdepend-fail-build-with-cycles
-
-Improved by showing all packages afflicted with cycles and the corresponding classes importing the conflicting packages.
+See also:
+* The original version by Daniel Seidewitz on [Stackoverflow](http://stackoverflow.com/questions/3416547/maven-jdepend-fail-build-with-cycles). Improved by showing all packages afflicted with cycles and the corresponding classes importing the conflicting packages.
+* [JDepend](https://github.com/clarkware/jdepend), the library being used to detect package cycles.
+* For more information about package cycles, see ["The Acyclic Dependencies Principle" by Robert C. Martin (Page 6)](http://www.objectmentor.com/resources/articles/granularity.pdf). 
