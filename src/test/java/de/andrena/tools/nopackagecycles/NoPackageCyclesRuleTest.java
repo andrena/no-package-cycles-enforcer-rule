@@ -62,13 +62,17 @@ public class NoPackageCyclesRuleTest {
 
 	@Test
 	public void execute_checkNotNecessary_ClassesDirNotFound() throws Exception {
+		jdependMock.setContainsCycles(true);
 		helper.setTargetDir(temporaryFolder.newFolder());
 		rule.execute(helper);
 	}
 
 	@Test
 	public void execute_checkNotNecessary_PackagingNotJar() throws Exception {
+		jdependMock.setContainsCycles(true);
 		helper.setPackaging(MAVEN_WAR_PACKAGING);
+		expectedException.expect(EnforcerRuleException.class);
+		expectedException.expectMessage(containsString("There are package cycles"));
 		rule.execute(helper);
 	}
 

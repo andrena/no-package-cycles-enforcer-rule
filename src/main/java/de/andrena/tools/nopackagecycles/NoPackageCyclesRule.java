@@ -61,7 +61,7 @@ public class NoPackageCyclesRule implements EnforcerRule {
 	}
 
 	private boolean checkIsNecessary(MavenProject project, File classesDir) {
-		return project.getPackaging().equalsIgnoreCase(MAVEN_JAR_PACKAGING) && classesDir.exists();
+		return classesDir.exists();
 	}
 
 	public String getCacheId() {
