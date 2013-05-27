@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.andrena.tools.nopackagecycles.CollectionOutput.StringProvider;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class PackageCycleOutputTest {
 
@@ -36,8 +35,9 @@ public class PackageCycleOutputTest {
 	}
 
 	@Test
-	public void outputFor_TwoPackagesWithCycle() throws Exception {
-		assertOutput(getPackageOutput(package1, package2) + getPackageOutput(package2, package1));
+	public void outputFor_TwoPackagesWithCycleButNoClasses() throws Exception {
+		assertOutput(getPackageCycleOutput(package1, package2) + getPackageOutput(package1)
+				+ getPackageOutput(package2));
 	}
 
 	@Test
@@ -46,15 +46,17 @@ public class PackageCycleOutputTest {
 		package1Class.addImportedPackage(package2);
 		JavaClass package2Class = createClassInPackage(PACKAGE2_CLASS_NAME, package2);
 		package2Class.addImportedPackage(package1);
-		assertOutput(getPackageOutputWithClasses(package1, package2, PACKAGE2_CLASS_NAME)
-				+ getPackageOutputWithClasses(package2, package1, PACKAGE1_CLASS_NAME1));
+		assertOutput(getPackageCycleOutput(package1, package2)
+				+ getPackageOutputWithClasses(package1, package2, PACKAGE1_CLASS_NAME1)
+				+ getPackageOutputWithClasses(package2, package1, PACKAGE2_CLASS_NAME));
 	}
 
 	@Test
 	public void outputFor_TwoPackagesWithCycle_AndOnePackageWithoutCycle() throws Exception {
 		String packageWithoutCycleName = "sample.package.without.cycle";
 		createPackage(packageWithoutCycleName);
-		assertOutput(getPackageOutput(package1, package2) + getPackageOutput(package2, package1));
+		assertOutput(getPackageCycleOutput(package1, package2) + getPackageOutput(package1)
+				+ getPackageOutput(package2));
 	}
 
 	@Test
@@ -63,8 +65,8 @@ public class PackageCycleOutputTest {
 		JavaPackage package3 = createPackage(package3Name);
 		package1.dependsUpon(package3);
 		package3.dependsUpon(package1);
-		assertOutput(getPackageOutput(package1, package2, package3) + getPackageOutput(package2, package1, package3)
-				+ getPackageOutput(package3, package1, package2));
+		assertOutput(getPackageCycleOutput(package1, package2, package3) + getPackageOutput(package1)
+				+ getPackageOutput(package2) + getPackageOutput(package3));
 	}
 
 	@Test
@@ -73,8 +75,9 @@ public class PackageCycleOutputTest {
 		package1Class1.addImportedPackage(package2);
 		JavaClass package1Class2 = createClassInPackage(PACKAGE1_CLASS_NAME2, package1);
 		package1Class2.addImportedPackage(package2);
-		assertOutput(getPackageOutput(package1, package2)
-				+ getPackageOutputWithClasses(package2, package1, PACKAGE1_CLASS_NAME1, PACKAGE1_CLASS_NAME2));
+		assertOutput(getPackageCycleOutput(package1, package2)
+				+ getPackageOutputWithClasses(package1, package2, PACKAGE1_CLASS_NAME1, PACKAGE1_CLASS_NAME2)
+				+ getPackageOutput(package2));
 	}
 
 	@Test
@@ -82,8 +85,8 @@ public class PackageCycleOutputTest {
 		JavaClass package1Class1 = createClassInPackage(PACKAGE1_CLASS_NAME1, package1);
 		package1Class1.addImportedPackage(package2);
 		createClassInPackage(PACKAGE1_CLASS_NAME2, package1);
-		assertOutput(getPackageOutput(package1, package2)
-				+ getPackageOutputWithClasses(package2, package1, PACKAGE1_CLASS_NAME1));
+		assertOutput(getPackageCycleOutput(package1, package2)
+				+ getPackageOutputWithClasses(package1, package2, PACKAGE1_CLASS_NAME1) + getPackageOutput(package2));
 	}
 
 	@Test
@@ -92,8 +95,9 @@ public class PackageCycleOutputTest {
 		JavaPackage otherPackage2 = createPackage("other.package2");
 		otherPackage1.dependsUpon(otherPackage2);
 		otherPackage2.dependsUpon(otherPackage1);
-		assertOutput(getPackageOutput(otherPackage1, otherPackage2) + getPackageOutput(otherPackage2, otherPackage1)
-				+ getPackageOutput(package1, package2) + getPackageOutput(package2, package1));
+		assertOutput(getPackageCycleOutput(otherPackage1, otherPackage2) + getPackageOutput(otherPackage1)
+				+ getPackageOutput(otherPackage2) + getPackageCycleOutput(package1, package2)
+				+ getPackageOutput(package1) + getPackageOutput(package2));
 	}
 
 	@Test
@@ -105,8 +109,9 @@ public class PackageCycleOutputTest {
 		otherPackage1.dependsUpon(package1);
 		package2.dependsUpon(otherPackage2);
 		otherPackage2.dependsUpon(package2);
-		assertOutput(getPackageOutput(otherPackage1, package1) + getPackageOutput(package1, otherPackage1)
-				+ getPackageOutput(otherPackage2, package2) + getPackageOutput(package2, otherPackage2));
+		assertOutput(getPackageCycleOutput(otherPackage1, package1) + getPackageOutput(otherPackage1)
+				+ getPackageOutput(package1) + getPackageCycleOutput(otherPackage2, package2)
+				+ getPackageOutput(otherPackage2) + getPackageOutput(package2));
 	}
 
 	private JavaPackage createPackage(String package1Name) {
@@ -133,21 +138,22 @@ public class PackageCycleOutputTest {
 			public String provide(String value) {
 				return value;
 			}
-		});
+		}, ", ");
 		return getPackageOutput(javaPackage.getName())
 				+ getDependencyPackageOutput(dependencyPackage.getName(), joinedClassNames);
 	}
 
-	private String getPackageOutput(JavaPackage javaPackage, JavaPackage... dependencyPackages) {
-		@SuppressWarnings("unchecked")
-		List<JavaPackage> dependencyPackageList = Arrays.asList(dependencyPackages);
-		String dependencyOutput = CollectionOutput.joinCollection(dependencyPackageList,
-				new StringProvider<JavaPackage>() {
-					public String provide(JavaPackage dependencyPackage) {
-						return getDependencyPackageOutput(dependencyPackage.getName(), "");
+	private String getPackageOutput(JavaPackage javaPackage) {
+		return getPackageOutput(javaPackage.getName());
+	}
+
+	private String getPackageCycleOutput(JavaPackage... packages) {
+		return "\n\nPackage-cycle found involving "
+				+ CollectionOutput.joinArray(packages, new StringProvider<JavaPackage>() {
+					public String provide(JavaPackage value) {
+						return value.getName();
 					}
-				});
-		return getPackageOutput(javaPackage.getName()) + dependencyOutput;
+				}, ", ") + ":";
 	}
 
 	private void assertOutput(String output) {
@@ -155,10 +161,10 @@ public class PackageCycleOutputTest {
 	}
 
 	private String getPackageOutput(String packageName) {
-		return "\n" + packageName + " has cyclic dependency to: ";
+		return "\n    " + packageName + " depends on:";
 	}
 
 	private String getDependencyPackageOutput(String dependencyPackageNames, String classNames) {
-		return dependencyPackageNames + " (" + classNames + ")";
+		return "\n        " + dependencyPackageNames + " (" + classNames + ")";
 	}
 }
