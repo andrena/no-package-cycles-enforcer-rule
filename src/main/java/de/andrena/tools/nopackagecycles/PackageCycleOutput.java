@@ -104,7 +104,7 @@ public class PackageCycleOutput {
 			List<JavaClass> dependentClasses) {
 		joinCollection(dependentClasses, output, new Appender<JavaClass>() {
 			public void append(JavaClass packageClass) {
-				output.append(packageClass.getName().substring(cyclicPackage.getName().length() + 1));
+				output.append(packageClass.getName().substring(packageClass.getPackageName().length() + 1));
 			}
 		}, ", ");
 	}

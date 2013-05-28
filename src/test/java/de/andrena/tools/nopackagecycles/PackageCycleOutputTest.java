@@ -114,6 +114,18 @@ public class PackageCycleOutputTest {
 				+ getPackageOutput(otherPackage2) + getPackageOutput(package2));
 	}
 
+	@Test
+	public void outputFor_ClassesInPackageNamesWithDifferentLengths() throws Exception {
+		initDefaultPackages();
+		JavaPackage otherPackage1 = createPackage("other.package1");
+		package1.dependsUpon(otherPackage1);
+		otherPackage1.dependsUpon(package1);
+		JavaClass package1Class = createClassInPackage(PACKAGE1_CLASS_NAME1, package1);
+		package1Class.addImportedPackage(otherPackage1);
+		assertOutput(getPackageCycleOutput(otherPackage1, package1) + getPackageOutput(otherPackage1)
+				+ getPackageOutputWithClasses(package1, otherPackage1, PACKAGE1_CLASS_NAME1));
+	}
+
 	private JavaPackage createPackage(String package1Name) {
 		JavaPackage newPackage = new JavaPackage(package1Name);
 		packages.add(newPackage);
@@ -127,9 +139,10 @@ public class PackageCycleOutputTest {
 	}
 
 	private JavaClass createClassInPackage(String className, JavaPackage classPackage) {
-		JavaClass package1Class = new JavaClass(classPackage.getName() + "." + className);
-		classPackage.addClass(package1Class);
-		return package1Class;
+		JavaClass javaClass = new JavaClass(classPackage.getName() + "." + className);
+		javaClass.setPackageName(classPackage.getName());
+		classPackage.addClass(javaClass);
+		return javaClass;
 	}
 
 	private String getPackageOutputWithClasses(JavaPackage javaPackage, JavaPackage dependencyPackage,
