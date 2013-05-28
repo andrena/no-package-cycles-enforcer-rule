@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
@@ -39,7 +40,11 @@ public class NoPackageCyclesRuleIntegrationTest {
 			rule.execute(helper);
 			fail("expected EnforcerRuleException");
 		} catch (EnforcerRuleException e) {
-			assertEquals(IOUtils.toString(EXPECTED_OUTPUT.openStream()), e.getMessage());
+			assertEquals(getExpectedOutput(), e.getMessage());
 		}
+	}
+
+	private String getExpectedOutput() throws IOException {
+		return IOUtils.toString(EXPECTED_OUTPUT.openStream()).replaceAll("\r", "");
 	}
 }
