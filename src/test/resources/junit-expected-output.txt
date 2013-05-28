@@ -1,0 +1,112 @@
+There are package cycles:
+
+Package-cycle found involving junit.extensions, junit.framework, junit.runner, org.junit, org.junit.experimental.theories, org.junit.experimental.theories.internal, org.junit.internal, org.junit.internal.builders, org.junit.internal.matchers, org.junit.internal.requests, org.junit.internal.runners, org.junit.internal.runners.model, org.junit.internal.runners.rules, org.junit.internal.runners.statements, org.junit.matchers, org.junit.rules, org.junit.runner, org.junit.runner.manipulation, org.junit.runner.notification, org.junit.runners, org.junit.runners.model:
+    junit.extensions depends on:
+        junit.framework (ActiveTestSuite, ActiveTestSuite$1, RepeatedTest, TestDecorator, TestSetup, TestSetup$1)
+    junit.framework depends on:
+        org.junit (JUnit4TestAdapter)
+        org.junit.internal (TestSuite)
+        org.junit.runner (JUnit4TestAdapter, JUnit4TestAdapterCache, JUnit4TestAdapterCache$1, JUnit4TestCaseFacade)
+        org.junit.runner.manipulation (JUnit4TestAdapter)
+        org.junit.runner.notification (JUnit4TestAdapterCache, JUnit4TestAdapterCache$1)
+    junit.runner depends on:
+        junit.framework (BaseTestRunner)
+    org.junit depends on:
+        org.junit.internal (Assert, Assume)
+        org.junit.runners (FixMethodOrder)
+    org.junit.experimental.theories depends on:
+        org.junit (Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$2)
+        org.junit.experimental.theories.internal (Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$1$1, Theories$TheoryAnchor$2)
+        org.junit.internal (Theories$TheoryAnchor, Theories$TheoryAnchor$1$1)
+        org.junit.runners (Theories, Theories$TheoryAnchor$1)
+        org.junit.runners.model (Theories, Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$1$1, Theories$TheoryAnchor$2)
+    org.junit.experimental.theories.internal depends on:
+        org.junit (AllMembersSupplier$MethodParameterValue)
+        org.junit.experimental.theories (AllMembersSupplier, AllMembersSupplier$MethodParameterValue, Assignments, BooleanSupplier, EnumSupplier, SpecificDataPointsSupplier)
+        org.junit.runners.model (AllMembersSupplier, AllMembersSupplier$MethodParameterValue, Assignments, SpecificDataPointsSupplier)
+    org.junit.internal depends on:
+        org.junit (ComparisonCriteria, ExactComparisonCriteria, InexactComparisonCriteria, MethodSorter)
+        org.junit.runner (TextListener)
+        org.junit.runner.notification (TextListener)
+        org.junit.runners (MethodSorter)
+    org.junit.internal.builders depends on:
+        junit.framework (JUnit3Builder)
+        org.junit (IgnoredBuilder)
+        org.junit.internal.runners (JUnit3Builder, SuiteMethodBuilder)
+        org.junit.runner (AllDefaultPossibilitiesBuilder, AnnotatedBuilder, IgnoredBuilder, IgnoredClassRunner, JUnit3Builder, JUnit4Builder, NullBuilder, SuiteMethodBuilder)
+        org.junit.runner.notification (IgnoredClassRunner)
+        org.junit.runners (JUnit4Builder)
+        org.junit.runners.model (AllDefaultPossibilitiesBuilder, AnnotatedBuilder, IgnoredBuilder, JUnit3Builder, JUnit4Builder, NullBuilder, SuiteMethodBuilder)
+    org.junit.internal.matchers depends on:
+        org.junit.internal (TypeSafeMatcher)
+    org.junit.internal.requests depends on:
+        org.junit.internal.builders (ClassRequest)
+        org.junit.internal.runners (FilterRequest)
+        org.junit.runner (ClassRequest, FilterRequest, SortingRequest)
+        org.junit.runner.manipulation (FilterRequest, SortingRequest)
+    org.junit.internal.runners depends on:
+        junit.extensions (JUnit38ClassRunner)
+        junit.framework (JUnit38ClassRunner, JUnit38ClassRunner$OldTestClassAdaptingListener, SuiteMethod)
+        org.junit (MethodValidator, TestClass, TestMethod)
+        org.junit.internal (ClassRoadie, MethodRoadie, TestClass)
+        org.junit.runner (ClassRoadie, ErrorReportingRunner, JUnit38ClassRunner, JUnit38ClassRunner$OldTestClassAdaptingListener, JUnit4ClassRunner, MethodRoadie)
+        org.junit.runner.manipulation (JUnit38ClassRunner, JUnit4ClassRunner, JUnit4ClassRunner$2)
+        org.junit.runner.notification (ClassRoadie, ErrorReportingRunner, JUnit38ClassRunner, JUnit38ClassRunner$OldTestClassAdaptingListener, JUnit4ClassRunner, JUnit4ClassRunner$1, MethodRoadie)
+        org.junit.runners.model (ErrorReportingRunner)
+    org.junit.internal.runners.model depends on:
+        org.junit.internal (EachTestNotifier)
+        org.junit.runner (EachTestNotifier)
+        org.junit.runner.notification (EachTestNotifier)
+        org.junit.runners.model (EachTestNotifier, MultipleFailureException)
+    org.junit.internal.runners.rules depends on:
+        org.junit (RuleFieldValidator)
+        org.junit.rules (RuleFieldValidator)
+        org.junit.runners.model (RuleFieldValidator)
+    org.junit.internal.runners.statements depends on:
+        org.junit.internal (ExpectException)
+        org.junit.runners.model (ExpectException, Fail, FailOnTimeout, FailOnTimeout$CallableStatement, InvokeMethod, RunAfters, RunBefores)
+    org.junit.matchers depends on:
+        org.junit.internal.matchers (JUnitMatchers)
+    org.junit.rules depends on:
+        org.junit (ErrorCollector$1, ExpectedException)
+        org.junit.internal (ExpectedException$ExpectedExceptionStatement, Stopwatch, TestWatcher, TestWatcher$1, TestWatchman$1)
+        org.junit.internal.matchers (ExpectedException)
+        org.junit.internal.runners.statements (Timeout)
+        org.junit.matchers (ExpectedExceptionMatcherBuilder)
+        org.junit.runner (ExpectedException, ExternalResource, RuleChain, RunRules, Stopwatch, TestName, TestRule, TestWatcher, TestWatcher$1, Timeout, Verifier)
+        org.junit.runners.model (ErrorCollector, ExpectedException, ExpectedException$ExpectedExceptionStatement, ExternalResource, ExternalResource$1, MethodRule, RuleChain, RunRules, TestRule, TestWatcher, TestWatcher$1, TestWatchman, TestWatchman$1, Timeout, Verifier, Verifier$1)
+    org.junit.runner depends on:
+        junit.framework (JUnitCore)
+        junit.runner (JUnitCore)
+        org.junit.internal (JUnitCore)
+        org.junit.internal.builders (Request)
+        org.junit.internal.requests (Request)
+        org.junit.internal.runners (JUnitCore, Request)
+        org.junit.runner.manipulation (Request)
+        org.junit.runner.notification (JUnitCore, Result, Result$Listener, Runner)
+        org.junit.runners (Computer)
+        org.junit.runners.model (Computer, Computer$1, Request)
+    org.junit.runner.manipulation depends on:
+        org.junit.runner (Filter, Filter$1, Filter$2, Filter$3, Sorter, Sorter$1)
+    org.junit.runner.notification depends on:
+        org.junit.runner (Failure, RunListener, RunNotifier, RunNotifier$1, RunNotifier$2, RunNotifier$3, RunNotifier$6, RunNotifier$7, RunNotifier$SafeNotifier, SynchronizedRunListener)
+    org.junit.runners depends on:
+        org.junit (BlockJUnit4ClassRunner, ParentRunner)
+        org.junit.internal (MethodSorters, ParentRunner)
+        org.junit.internal.builders (Suite)
+        org.junit.internal.runners (AllTests)
+        org.junit.internal.runners.model (BlockJUnit4ClassRunner$1, ParentRunner)
+        org.junit.internal.runners.rules (BlockJUnit4ClassRunner, ParentRunner)
+        org.junit.internal.runners.statements (BlockJUnit4ClassRunner, ParentRunner)
+        org.junit.rules (BlockJUnit4ClassRunner, ParentRunner)
+        org.junit.runner (BlockJUnit4ClassRunner, Parameterized, ParentRunner, Suite)
+        org.junit.runner.manipulation (ParentRunner, ParentRunner$4)
+        org.junit.runner.notification (BlockJUnit4ClassRunner, Parameterized$TestClassRunnerForParameters, ParentRunner, ParentRunner$2, ParentRunner$3, Suite)
+        org.junit.runners.model (BlockJUnit4ClassRunner, JUnit4, Parameterized, Parameterized$TestClassRunnerForParameters, ParentRunner, ParentRunner$1, ParentRunner$2, Suite)
+    org.junit.runners.model depends on:
+        org.junit (TestClass)
+        org.junit.experimental.theories (FrameworkMethod)
+        org.junit.internal (TestClass)
+        org.junit.internal.runners (RunnerBuilder)
+        org.junit.internal.runners.model (FrameworkMethod$1, MultipleFailureException)
+        org.junit.runner (RunnerBuilder)

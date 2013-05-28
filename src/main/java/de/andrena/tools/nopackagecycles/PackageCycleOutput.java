@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jdepend.framework.JavaClass;
 import jdepend.framework.JavaPackage;
@@ -19,6 +17,7 @@ public class PackageCycleOutput {
 
 	private List<JavaPackage> packages;
 	private StringBuilder output;
+	private PackageCycleCollector packageCycleCollector = new PackageCycleCollector();
 
 	public PackageCycleOutput(List<JavaPackage> packages) {
 		this.packages = packages;
@@ -26,19 +25,19 @@ public class PackageCycleOutput {
 
 	public String getOutput() {
 		output = new StringBuilder();
-		orderPackagesByName();
+		orderByPackageName(packages);
 		while (!packages.isEmpty()) {
 			JavaPackage javaPackage = packages.get(0);
 			packages.remove(javaPackage);
-			if (javaPackage.containsCycle()) {
-				appendOutputForPackageCycle(javaPackage);
+			List<JavaPackage> cyclicPackages = getCyclicPackages(javaPackage);
+			if (!cyclicPackages.isEmpty()) {
+				appendOutputForPackageCycle(cyclicPackages);
 			}
 		}
 		return output.toString();
 	}
 
-	private void appendOutputForPackageCycle(JavaPackage javaPackage) {
-		List<JavaPackage> cyclicPackages = getCyclicPackages(javaPackage);
+	private void appendOutputForPackageCycle(List<JavaPackage> cyclicPackages) {
 		packages.removeAll(cyclicPackages);
 		appendHeaderForPackageCycle(cyclicPackages);
 		for (JavaPackage cyclicPackage : cyclicPackages) {
@@ -55,12 +54,6 @@ public class PackageCycleOutput {
 			}
 		}, ", "));
 		output.append(':');
-	}
-
-	private void orderPackagesByName() {
-		List<JavaPackage> packageList = new ArrayList<JavaPackage>(packages);
-		orderByPackageName(packageList);
-		packages = packageList;
 	}
 
 	private void appendOutputForPackage(final JavaPackage javaPackage, List<JavaPackage> cyclicPackages) {
@@ -118,9 +111,7 @@ public class PackageCycleOutput {
 	}
 
 	private List<JavaPackage> getCyclicPackages(JavaPackage javaPackage) {
-		List<JavaPackage> cyclicPackages = new ArrayList<JavaPackage>();
-		javaPackage.collectAllCycles(cyclicPackages);
-		removeDuplications(javaPackage, cyclicPackages);
+		List<JavaPackage> cyclicPackages = new ArrayList<JavaPackage>(packageCycleCollector.collectCycles(javaPackage));
 		orderByPackageName(cyclicPackages);
 		return cyclicPackages;
 	}
@@ -131,12 +122,6 @@ public class PackageCycleOutput {
 				return package1.getName().compareTo(package2.getName());
 			}
 		});
-	}
-
-	private void removeDuplications(JavaPackage javaPackage, List<JavaPackage> cyclicPackages) {
-		Set<JavaPackage> uniquePackages = new HashSet<JavaPackage>(cyclicPackages);
-		cyclicPackages.clear();
-		cyclicPackages.addAll(uniquePackages);
 	}
 
 }

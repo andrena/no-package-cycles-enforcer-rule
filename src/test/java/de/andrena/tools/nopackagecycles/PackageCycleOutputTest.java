@@ -60,6 +60,15 @@ public class PackageCycleOutputTest {
 	}
 
 	@Test
+	public void outputFor_TwoPackagesWithCycle_AndOnePackageWithoutCycle_DependingOnAnotherPackage() throws Exception {
+		String packageWithoutCycleName = "sample.package.without.cycle";
+		JavaPackage packageWithoutCycle = createPackage(packageWithoutCycleName);
+		packageWithoutCycle.dependsUpon(package1);
+		assertOutput(getPackageCycleOutput(package1, package2) + getPackageOutput(package1)
+				+ getPackageOutput(package2));
+	}
+
+	@Test
 	public void outputFor_ThreePackagesWithCycle() throws Exception {
 		String package3Name = "sample.package3";
 		JavaPackage package3 = createPackage(package3Name);
