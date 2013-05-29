@@ -5,36 +5,46 @@ import static de.andrena.tools.nopackagecycles.CollectionOutput.joinCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import jdepend.framework.JavaClass;
 import jdepend.framework.JavaPackage;
 import de.andrena.tools.nopackagecycles.CollectionOutput.Appender;
 import de.andrena.tools.nopackagecycles.CollectionOutput.StringProvider;
+import de.andrena.tools.nopackagecycles.comparator.JavaClassNameComparator;
+import de.andrena.tools.nopackagecycles.comparator.JavaPackageListComparator;
+import de.andrena.tools.nopackagecycles.comparator.JavaPackageNameComparator;
 
 public class PackageCycleOutput {
 
 	private List<JavaPackage> packages;
 	private StringBuilder output;
-	private PackageCycleCollector packageCycleCollector = new PackageCycleCollector();
+	private PackageCycleCollector packageCycleCollector;
 
 	public PackageCycleOutput(List<JavaPackage> packages) {
 		this.packages = packages;
+		packageCycleCollector = new PackageCycleCollector();
 	}
 
 	public String getOutput() {
 		output = new StringBuilder();
-		orderByPackageName(packages);
-		while (!packages.isEmpty()) {
-			JavaPackage javaPackage = packages.get(0);
-			packages.remove(javaPackage);
-			List<JavaPackage> cyclicPackages = getCyclicPackages(javaPackage);
-			if (!cyclicPackages.isEmpty()) {
-				appendOutputForPackageCycle(cyclicPackages);
-			}
+		for (List<JavaPackage> cycle : collectAndSortCycles()) {
+			appendOutputForPackageCycle(cycle);
 		}
 		return output.toString();
+	}
+
+	private List<List<JavaPackage>> collectAndSortCycles() {
+		List<Set<JavaPackage>> cycles = packageCycleCollector.collectCycles(packages);
+		List<List<JavaPackage>> orderedCycles = new ArrayList<List<JavaPackage>>();
+		for (Set<JavaPackage> cycle : cycles) {
+			ArrayList<JavaPackage> cycleAsList = new ArrayList<JavaPackage>(cycle);
+			Collections.sort(cycleAsList, JavaPackageNameComparator.INSTANCE);
+			orderedCycles.add(cycleAsList);
+		}
+		Collections.sort(orderedCycles, JavaPackageListComparator.INSTANCE);
+		return orderedCycles;
 	}
 
 	private void appendOutputForPackageCycle(List<JavaPackage> cyclicPackages) {
@@ -48,7 +58,6 @@ public class PackageCycleOutput {
 	private void appendHeaderForPackageCycle(List<JavaPackage> cyclicPackages) {
 		output.append("\n\n").append("Package-cycle found involving ");
 		output.append(joinCollection(cyclicPackages, new StringProvider<JavaPackage>() {
-
 			public String provide(JavaPackage javaPackage) {
 				return javaPackage.getName();
 			}
@@ -82,7 +91,7 @@ public class PackageCycleOutput {
 				dependentClasses.add(javaClass);
 			}
 		}
-		orderByClassName(dependentClasses);
+		Collections.sort(dependentClasses, JavaClassNameComparator.INSTANCE);
 		return dependentClasses;
 	}
 
@@ -100,28 +109,6 @@ public class PackageCycleOutput {
 				output.append(packageClass.getName().substring(packageClass.getPackageName().length() + 1));
 			}
 		}, ", ");
-	}
-
-	private void orderByClassName(List<JavaClass> dependentClasses) {
-		Collections.sort(dependentClasses, new Comparator<JavaClass>() {
-			public int compare(JavaClass class1, JavaClass class2) {
-				return class1.getName().compareTo(class2.getName());
-			}
-		});
-	}
-
-	private List<JavaPackage> getCyclicPackages(JavaPackage javaPackage) {
-		List<JavaPackage> cyclicPackages = new ArrayList<JavaPackage>(packageCycleCollector.collectCycles(javaPackage));
-		orderByPackageName(cyclicPackages);
-		return cyclicPackages;
-	}
-
-	private void orderByPackageName(List<JavaPackage> cyclicPackages) {
-		Collections.sort(cyclicPackages, new Comparator<JavaPackage>() {
-			public int compare(JavaPackage package1, JavaPackage package2) {
-				return package1.getName().compareTo(package2.getName());
-			}
-		});
 	}
 
 }

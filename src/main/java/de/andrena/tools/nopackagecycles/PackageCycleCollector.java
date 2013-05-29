@@ -1,57 +1,57 @@
 package de.andrena.tools.nopackagecycles;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import jdepend.framework.JavaPackage;
 
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.alg.StrongConnectivityInspector;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+
 public class PackageCycleCollector {
 
-	public Set<JavaPackage> collectCycles(JavaPackage javaPackage) {
-		return collectCycles(javaPackage, new ArrayList<JavaPackage>());
+	public List<Set<JavaPackage>> collectCycles(List<JavaPackage> packages) {
+		DirectedGraph<JavaPackage, DefaultEdge> graph = new DefaultDirectedGraph<JavaPackage, DefaultEdge>(
+				DefaultEdge.class);
+		addVerticesToGraph(packages, graph);
+		addEdgesToGraph(packages, graph);
+		return collectCycles(graph);
 	}
 
-	private Set<JavaPackage> collectCycles(JavaPackage javaPackage, List<JavaPackage> visitedPackages) {
-		if (visitedPackages.contains(javaPackage)) {
-			return getPackageCycle(javaPackage, visitedPackages);
-		}
-		visitedPackages.add(javaPackage);
-		return collectAllDependencyCycles(javaPackage, visitedPackages);
+	private List<Set<JavaPackage>> collectCycles(DirectedGraph<JavaPackage, DefaultEdge> graph) {
+		List<Set<JavaPackage>> stronglyConnectedSets = new StrongConnectivityInspector<JavaPackage, DefaultEdge>(graph)
+				.stronglyConnectedSets();
+		removeSingletonSets(stronglyConnectedSets);
+		return stronglyConnectedSets;
 	}
 
-	private Set<JavaPackage> collectAllDependencyCycles(JavaPackage javaPackage, List<JavaPackage> visitedPackages) {
-		Set<JavaPackage> allCycles = new HashSet<JavaPackage>();
-		for (JavaPackage dependencyPackage : getEfferents(javaPackage)) {
-			Set<JavaPackage> dependencyPackageCycle = collectCycles(dependencyPackage, new ArrayList<JavaPackage>(
-					visitedPackages));
-			if (dependencyPackageCycle.contains(javaPackage)) {
-				allCycles.addAll(dependencyPackageCycle);
-				visitedPackages.addAll(dependencyPackageCycle);
+	private void removeSingletonSets(List<Set<JavaPackage>> stronglyConnectedSets) {
+		Iterator<Set<JavaPackage>> iterator = stronglyConnectedSets.iterator();
+		while (iterator.hasNext()) {
+			Set<JavaPackage> stronglyConnectedSet = iterator.next();
+			if (stronglyConnectedSet.size() == 1) {
+				iterator.remove();
 			}
 		}
-		return allCycles;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Collection<JavaPackage> getEfferents(JavaPackage javaPackage) {
-		return javaPackage.getEfferents();
-	}
-
-	private Set<JavaPackage> getPackageCycle(JavaPackage javaPackage, List<JavaPackage> visitedPackages) {
-		Set<JavaPackage> packageCycle = new HashSet<JavaPackage>();
-		boolean includeFollowingPackages = false;
-		for (JavaPackage visitedPackage : visitedPackages) {
-			if (visitedPackage.equals(javaPackage)) {
-				includeFollowingPackages = true;
-			}
-			if (includeFollowingPackages) {
-				packageCycle.add(visitedPackage);
+	private void addEdgesToGraph(List<JavaPackage> packages, DirectedGraph<JavaPackage, DefaultEdge> graph) {
+		for (JavaPackage javaPackage : packages) {
+			for (JavaPackage efferent : (Collection<JavaPackage>) javaPackage.getEfferents()) {
+				graph.addEdge(javaPackage, efferent);
 			}
 		}
-		return packageCycle;
+	}
+
+	private void addVerticesToGraph(List<JavaPackage> packages, DirectedGraph<JavaPackage, DefaultEdge> graph) {
+		for (JavaPackage javaPackage : packages) {
+			graph.addVertex(javaPackage);
+		}
 	}
 
 }
