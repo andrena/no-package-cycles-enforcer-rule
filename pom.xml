@@ -85,7 +85,7 @@
 				<version>2.14.1</version>
 				<configuration>
 					<excludes>
-						<exclude>junit-target/**</exclude>
+						<exclude>*-target/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

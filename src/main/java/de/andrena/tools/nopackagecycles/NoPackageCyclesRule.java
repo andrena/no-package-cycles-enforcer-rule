@@ -46,7 +46,8 @@ public class NoPackageCyclesRule implements EnforcerRule {
 		jdepend.addDirectory(classesDir.getAbsolutePath());
 		jdepend.analyze();
 		if (jdepend.containsCycles()) {
-			throw new EnforcerRuleException("There are package cycles:" + getPackageCycles(jdepend));
+			String packageCycles = getPackageCycles(jdepend);
+			throw new EnforcerRuleException("There are package cycles:" + packageCycles);
 		}
 	}
 

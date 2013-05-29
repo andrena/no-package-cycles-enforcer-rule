@@ -29,6 +29,7 @@ public class PackageCycleCollector {
 					visitedPackages));
 			if (dependencyPackageCycle.contains(javaPackage)) {
 				allCycles.addAll(dependencyPackageCycle);
+				visitedPackages.addAll(dependencyPackageCycle);
 			}
 		}
 		return allCycles;
