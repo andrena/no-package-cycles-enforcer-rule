@@ -2,7 +2,12 @@ package de.andrena.tools.nopackagecycles;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+
+import java.io.File;
+import java.util.List;
+
 import jdepend.framework.JDepend;
 
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
@@ -23,8 +28,6 @@ public class NoPackageCyclesRuleTest {
 			return jdependMock;
 		}
 	}
-
-	private static final String MAVEN_WAR_PACKAGING = "war";
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -62,18 +65,13 @@ public class NoPackageCyclesRuleTest {
 
 	@Test
 	public void execute_checkNotNecessary_ClassesDirNotFound() throws Exception {
-		jdependMock.setContainsCycles(true);
-		helper.setTargetDir(temporaryFolder.newFolder());
+		File newFolder = temporaryFolder.newFolder();
+		helper.setTargetDir(newFolder);
 		rule.execute(helper);
-	}
-
-	@Test
-	public void execute_checkNotNecessary_PackagingNotJar() throws Exception {
-		jdependMock.setContainsCycles(true);
-		helper.setPackaging(MAVEN_WAR_PACKAGING);
-		expectedException.expect(EnforcerRuleException.class);
-		expectedException.expectMessage(containsString("There are package cycles"));
-		rule.execute(helper);
+		List<String> infoLogs = helper.getLogMock().getInfo();
+		assertThat(infoLogs, hasSize(2));
+		assertSearchingInfo(newFolder, infoLogs);
+		assertThat(infoLogs.get(1), is("Directory " + getTargetDirectory(newFolder) + " could not be found."));
 	}
 
 	@Test
@@ -95,6 +93,9 @@ public class NoPackageCyclesRuleTest {
 	@Test
 	public void execute_ContainsNoCycles() throws Exception {
 		rule.execute(helper);
+		List<String> infoLogs = helper.getLogMock().getInfo();
+		assertThat(infoLogs, hasSize(1));
+		assertSearchingInfo(temporaryFolder.getRoot(), infoLogs);
 	}
 
 	@Test
@@ -103,5 +104,14 @@ public class NoPackageCyclesRuleTest {
 		expectedException.expect(EnforcerRuleException.class);
 		expectedException.expectMessage(containsString("There are package cycles"));
 		rule.execute(helper);
+	}
+
+	private void assertSearchingInfo(File projectDirectory, List<String> infoLogs) {
+		assertThat(infoLogs.get(0), is("Searching directory " + getTargetDirectory(projectDirectory)
+				+ " for package cycles."));
+	}
+
+	private String getTargetDirectory(File newFolder) {
+		return new File(newFolder, NoPackageCyclesRule.MAVEN_CLASSES_DIR).getAbsolutePath();
 	}
 }
