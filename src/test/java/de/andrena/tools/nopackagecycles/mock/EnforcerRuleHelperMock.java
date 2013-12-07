@@ -10,11 +10,12 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
-import de.andrena.tools.nopackagecycles.NoPackageCyclesRule;
+import de.andrena.tools.nopackagecycles.DirectoriesWithClasses;
 
 public class EnforcerRuleHelperMock implements EnforcerRuleHelper {
 
-	private File targetDir;
+	private File classesDir;
+	private File testClassesDir;
 	private boolean evaluateThrowsException;
 	private final LogMock logMock = new LogMock();
 
@@ -26,10 +27,14 @@ public class EnforcerRuleHelperMock implements EnforcerRuleHelper {
 		this.evaluateThrowsException = evaluateThrowsException;
 	}
 
-	public void setTargetDir(File targetDir) {
-		this.targetDir = targetDir;
+	public void setClassesDir(File targetDir) {
+		this.classesDir = targetDir;
 	}
 
+	public void setTestClassesDir(File testClassesDir) {
+		this.testClassesDir = testClassesDir;
+	}
+	
 	public File alignToBaseDirectory(File arg0) {
 		return null;
 	}
@@ -38,8 +43,11 @@ public class EnforcerRuleHelperMock implements EnforcerRuleHelper {
 		if (evaluateThrowsException) {
 			throw new ExpressionEvaluationException("");
 		}
-		if (NoPackageCyclesRule.MAVEN_PROJECT_BUILD_DIRECTORY_VAR.equals(variable)) {
-			return targetDir.getPath();
+		if (DirectoriesWithClasses.MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR.equals(variable)) {
+			return classesDir.getPath();
+		}
+		if (DirectoriesWithClasses.MAVEN_PROJECT_BUILD_TEST_OUTPUT_DIRECTORY_VAR.equals(variable)) {
+			return testClassesDir.getPath();
 		}
 		return null;
 	}

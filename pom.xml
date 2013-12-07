@@ -109,6 +109,7 @@
 					<includes>
 						<include>**/*IntegrationTest.java</include>
 					</includes>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -118,7 +119,7 @@
 					<dependency>
 						<groupId>de.andrena.tools.nopackagecycles</groupId>
 						<artifactId>no-package-cycles-enforcer-rule</artifactId>
-						<version>1.0.3</version>
+						<version>1.0.4</version>
 					</dependency>
 				</dependencies>
 				<executions>
@@ -194,7 +195,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
+			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 			<scope>test</scope>

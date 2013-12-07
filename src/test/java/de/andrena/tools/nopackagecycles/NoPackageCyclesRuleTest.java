@@ -43,9 +43,9 @@ public class NoPackageCyclesRuleTest {
 	public void setUp() throws Exception {
 		jdependMock = new JDependMock();
 		rule = new NoPackageCyclesRuleMock();
-		temporaryFolder.newFolder(NoPackageCyclesRule.MAVEN_CLASSES_DIR);
 		helper = new EnforcerRuleHelperMock();
-		helper.setTargetDir(temporaryFolder.getRoot());
+		helper.setClassesDir(temporaryFolder.newFolder("classes"));
+		helper.setTestClassesDir(temporaryFolder.newFolder("test-classes"));
 	}
 
 	@Test
@@ -65,13 +65,16 @@ public class NoPackageCyclesRuleTest {
 
 	@Test
 	public void execute_checkNotNecessary_ClassesDirNotFound() throws Exception {
-		File newFolder = temporaryFolder.newFolder();
-		helper.setTargetDir(newFolder);
+		File nonExistentClassesFolder = new File(temporaryFolder.getRoot(), "non-existent-classes-dir");
+		helper.setClassesDir(nonExistentClassesFolder);
+		File nonExistentTestClassesFolder = new File(temporaryFolder.getRoot(), "non-existent-test-classes-dir");
+		helper.setTestClassesDir(nonExistentTestClassesFolder);
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
-		assertThat(infoLogs, hasSize(2));
-		assertSearchingInfo(newFolder, infoLogs);
-		assertThat(infoLogs.get(1), is("Directory " + getTargetDirectory(newFolder) + " could not be found."));
+		assertThat(infoLogs, hasSize(3));
+		assertThat(infoLogs.get(0), is("Directory " + nonExistentClassesFolder.getAbsolutePath() + " could not be found."));
+		assertThat(infoLogs.get(1), is("Directory " + nonExistentTestClassesFolder.getAbsolutePath() + " could not be found."));
+		assertThat(infoLogs.get(2), is("No directories with classes to check for cycles found."));
 	}
 
 	@Test
@@ -94,8 +97,20 @@ public class NoPackageCyclesRuleTest {
 	public void execute_ContainsNoCycles() throws Exception {
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
-		assertThat(infoLogs, hasSize(1));
-		assertSearchingInfo(temporaryFolder.getRoot(), infoLogs);
+		assertThat(infoLogs, hasSize(2));
+		assertThat(infoLogs.get(0), is("Adding directory " + new File(temporaryFolder.getRoot(), "classes").getAbsolutePath() + " for package cycles search."));
+		assertThat(infoLogs.get(1), is("Adding directory " + new File(temporaryFolder.getRoot(), "test-classes").getAbsolutePath() + " for package cycles search."));
+	}
+
+	@Test
+	public void execute_ContainsNoCyclesWithoutTestClasses() throws Exception {
+		File nonExistentTestClassesDir = new File(temporaryFolder.getRoot(), "does not exist");
+		helper.setTestClassesDir(nonExistentTestClassesDir);
+		rule.execute(helper);
+		List<String> infoLogs = helper.getLogMock().getInfo();
+		assertThat(infoLogs, hasSize(2));
+		assertThat(infoLogs.get(0), is("Adding directory " + new File(temporaryFolder.getRoot(), "classes").getAbsolutePath() + " for package cycles search."));
+		assertThat(infoLogs.get(1), is("Directory " + nonExistentTestClassesDir.getAbsolutePath() + " could not be found."));
 	}
 
 	@Test
@@ -104,14 +119,5 @@ public class NoPackageCyclesRuleTest {
 		expectedException.expect(EnforcerRuleException.class);
 		expectedException.expectMessage(containsString("There are package cycles"));
 		rule.execute(helper);
-	}
-
-	private void assertSearchingInfo(File projectDirectory, List<String> infoLogs) {
-		assertThat(infoLogs.get(0), is("Searching directory " + getTargetDirectory(projectDirectory)
-				+ " for package cycles."));
-	}
-
-	private String getTargetDirectory(File newFolder) {
-		return new File(newFolder, NoPackageCyclesRule.MAVEN_CLASSES_DIR).getAbsolutePath();
 	}
 }
