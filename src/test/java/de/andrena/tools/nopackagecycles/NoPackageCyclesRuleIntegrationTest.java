@@ -11,9 +11,7 @@ import java.net.URL;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.andrena.tools.nopackagecycles.mock.EnforcerRuleHelperMock;
 
@@ -25,9 +23,6 @@ public class NoPackageCyclesRuleIntegrationTest {
 
 	private NoPackageCyclesRule rule;
 	private EnforcerRuleHelperMock helper;
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 
 	@Before
 	public void setUp() throws Exception {
