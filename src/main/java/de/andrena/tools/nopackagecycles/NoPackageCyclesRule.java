@@ -15,8 +15,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 
 public class NoPackageCyclesRule implements EnforcerRule {
 
-	public static final String MAVEN_CLASSES_DIR = "classes";
-	public static final String MAVEN_PROJECT_BUILD_DIRECTORY_VAR = "${project.build.directory}";
+	public static final String MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR = "${project.build.outputDirectory}";
 
 	public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
 		try {
@@ -30,8 +29,7 @@ public class NoPackageCyclesRule implements EnforcerRule {
 
 	private void executePackageCycleCheckIfNecessary(EnforcerRuleHelper helper) throws ExpressionEvaluationException,
 			IOException, EnforcerRuleException {
-		File targetDir = new File((String) helper.evaluate(MAVEN_PROJECT_BUILD_DIRECTORY_VAR));
-		File classesDir = new File(targetDir, MAVEN_CLASSES_DIR);
+		File classesDir = new File((String) helper.evaluate(MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR));
 		helper.getLog().info("Searching directory " + classesDir.getAbsolutePath() + " for package cycles.");
 		if (checkIsNecessary(classesDir)) {
 			executePackageCycleCheck(classesDir);

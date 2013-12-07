@@ -38,7 +38,7 @@ public class EnforcerRuleHelperMock implements EnforcerRuleHelper {
 		if (evaluateThrowsException) {
 			throw new ExpressionEvaluationException("");
 		}
-		if (NoPackageCyclesRule.MAVEN_PROJECT_BUILD_DIRECTORY_VAR.equals(variable)) {
+		if (NoPackageCyclesRule.MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR.equals(variable)) {
 			return targetDir.getPath();
 		}
 		return null;

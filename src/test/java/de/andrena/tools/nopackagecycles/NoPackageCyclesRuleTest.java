@@ -43,7 +43,6 @@ public class NoPackageCyclesRuleTest {
 	public void setUp() throws Exception {
 		jdependMock = new JDependMock();
 		rule = new NoPackageCyclesRuleMock();
-		temporaryFolder.newFolder(NoPackageCyclesRule.MAVEN_CLASSES_DIR);
 		helper = new EnforcerRuleHelperMock();
 		helper.setTargetDir(temporaryFolder.getRoot());
 	}
@@ -65,13 +64,13 @@ public class NoPackageCyclesRuleTest {
 
 	@Test
 	public void execute_checkNotNecessary_ClassesDirNotFound() throws Exception {
-		File newFolder = temporaryFolder.newFolder();
-		helper.setTargetDir(newFolder);
+		File nonExistentFolder = new File(temporaryFolder.getRoot(), "non-existent-classes-dir");
+		helper.setTargetDir(nonExistentFolder);
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
 		assertThat(infoLogs, hasSize(2));
-		assertSearchingInfo(newFolder, infoLogs);
-		assertThat(infoLogs.get(1), is("Directory " + getTargetDirectory(newFolder) + " could not be found."));
+		assertSearchingInfo(nonExistentFolder, infoLogs);
+		assertThat(infoLogs.get(1), is("Directory " + nonExistentFolder.getAbsolutePath() + " could not be found."));
 	}
 
 	@Test
@@ -107,11 +106,7 @@ public class NoPackageCyclesRuleTest {
 	}
 
 	private void assertSearchingInfo(File projectDirectory, List<String> infoLogs) {
-		assertThat(infoLogs.get(0), is("Searching directory " + getTargetDirectory(projectDirectory)
+		assertThat(infoLogs.get(0), is("Searching directory " + projectDirectory.getAbsolutePath()
 				+ " for package cycles."));
-	}
-
-	private String getTargetDirectory(File newFolder) {
-		return new File(newFolder, NoPackageCyclesRule.MAVEN_CLASSES_DIR).getAbsolutePath();
 	}
 }
