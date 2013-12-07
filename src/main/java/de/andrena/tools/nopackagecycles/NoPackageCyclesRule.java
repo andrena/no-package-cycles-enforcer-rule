@@ -15,8 +15,6 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 
 public class NoPackageCyclesRule implements EnforcerRule {
 
-	public static final String MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR = "${project.build.outputDirectory}";
-
 	public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
 		try {
 			executePackageCycleCheckIfNecessary(helper);
@@ -29,18 +27,19 @@ public class NoPackageCyclesRule implements EnforcerRule {
 
 	private void executePackageCycleCheckIfNecessary(EnforcerRuleHelper helper) throws ExpressionEvaluationException,
 			IOException, EnforcerRuleException {
-		File classesDir = new File((String) helper.evaluate(MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR));
-		helper.getLog().info("Searching directory " + classesDir.getAbsolutePath() + " for package cycles.");
-		if (checkIsNecessary(classesDir)) {
-			executePackageCycleCheck(classesDir);
+		DirectoriesWithClasses directories = new DirectoriesWithClasses(helper);
+		if (directories.directoriesWithClassesFound()) {
+			executePackageCycleCheck(directories);
 		} else {
-			helper.getLog().info("Directory " + classesDir.getAbsolutePath() + " could not be found.");
+			helper.getLog().info("No directories with classes to check for cycles found.");
 		}
 	}
 
-	private void executePackageCycleCheck(File classesDir) throws IOException, EnforcerRuleException {
+	private void executePackageCycleCheck(Iterable<File> directories) throws IOException, EnforcerRuleException {
 		JDepend jdepend = createJDepend();
-		jdepend.addDirectory(classesDir.getAbsolutePath());
+		for (File directory : directories) {
+			jdepend.addDirectory(directory.getAbsolutePath());
+		}
 		jdepend.analyze();
 		if (jdepend.containsCycles()) {
 			throw new EnforcerRuleException("There are package cycles:" + getPackageCycles(jdepend));
@@ -55,10 +54,6 @@ public class NoPackageCyclesRule implements EnforcerRule {
 		@SuppressWarnings("unchecked")
 		Collection<JavaPackage> packages = jdepend.getPackages();
 		return new PackageCycleOutput(new ArrayList<JavaPackage>(packages)).getOutput();
-	}
-
-	private boolean checkIsNecessary(File classesDir) {
-		return classesDir.exists();
 	}
 
 	public String getCacheId() {

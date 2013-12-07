@@ -41,7 +41,8 @@ public class NoPackageCyclesRuleIntegrationTest {
 	}
 
 	private void assertPackageCycles(URL targetFolder, URL expectedOutput) throws URISyntaxException, IOException {
-		helper.setTargetDir(new File(targetFolder.toURI()));
+		helper.setTestClassesDir(new File("non-existent"));
+		helper.setClassesDir(new File(targetFolder.toURI()));
 		try {
 			rule.execute(helper);
 			fail("expected EnforcerRuleException");
