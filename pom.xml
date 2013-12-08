@@ -36,6 +36,10 @@
 			<name>Ben Romberg</name>
 			<organization>andrena objects ag</organization>
 		</developer>
+		<developer>
+			<name>David Burkhart</name>
+			<organization>andrena objects ag</organization>
+		</developer>
 	</developers>
 
 	<properties>
