@@ -4,7 +4,7 @@ This Maven Enforcer Rule checks your project for package cycles. It fails the bu
 
 Usage: Add the following plugin to your POM:
 
-```
+```xml
 <plugin>
 	<artifactId>maven-enforcer-plugin</artifactId>
 	<version>1.2</version>
