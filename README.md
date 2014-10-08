@@ -21,7 +21,7 @@ Usage: Add the following plugin to your POM:
 			<goals>
 				<goal>enforce</goal>
 			</goals>
-			<phase>test-compile</phase>
+			<phase>test</phase>
 			<configuration>
 				<rules>
 					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule" />
