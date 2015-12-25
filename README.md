@@ -1,5 +1,3 @@
-[![Build Status](https://buildhive.cloudbees.com/job/andrena/job/no-package-cycles-enforcer-rule/badge/icon)](https://buildhive.cloudbees.com/job/andrena/job/no-package-cycles-enforcer-rule/)
-
 This Maven Enforcer Rule checks your project for package cycles. It fails the build if any package cycle is found, showing you the packages and classes involved in the cycle.
 
 Usage: Add the following plugin to your POM:
@@ -10,9 +8,9 @@ Usage: Add the following plugin to your POM:
 	<version>1.2</version>
 	<dependencies>
 		<dependency>
-			<groupId>de.andrena.tools.nopackagecycles</groupId>
+			<groupId>com.benromberg.nopackagecycles</groupId>
 			<artifactId>no-package-cycles-enforcer-rule</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.6</version>
 		</dependency>
 	</dependencies>
 	<executions>
