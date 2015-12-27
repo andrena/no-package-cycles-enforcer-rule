@@ -40,6 +40,11 @@ public class NoPackageCyclesRuleIntegrationTest {
 		assertPackageCycles(JUNIT_TARGET_FOLDER, JUNIT_EXPECTED_OUTPUT);
 	}
 
+	@Test
+	public void voucherIntegrationTest() throws Exception {
+		assertPackageCycles(getResource("voucher-target"), getResource("voucher-expected-output.txt"));
+	}
+
 	private void assertPackageCycles(URL targetFolder, URL expectedOutput) throws URISyntaxException, IOException {
 		helper.setTestClassesDir(new File("non-existent"));
 		helper.setClassesDir(new File(targetFolder.toURI()));
