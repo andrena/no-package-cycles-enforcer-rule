@@ -16,7 +16,7 @@ Package-cycle found involving junit.extensions, junit.framework, junit.runner, o
         org.junit.runners (FixMethodOrder)
     org.junit.experimental.theories depends on:
         org.junit (Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$2)
-        org.junit.experimental.theories.internal (Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$1$1, Theories$TheoryAnchor$2)
+        org.junit.experimental.theories.internal (FromDataPoints, Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$1$1, Theories$TheoryAnchor$2)
         org.junit.internal (Theories$TheoryAnchor, Theories$TheoryAnchor$1$1)
         org.junit.runners (Theories, Theories$TheoryAnchor$1)
         org.junit.runners.model (Theories, Theories$TheoryAnchor, Theories$TheoryAnchor$1, Theories$TheoryAnchor$1$1, Theories$TheoryAnchor$2)
