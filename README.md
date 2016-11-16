@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andrena/no-package-cycles-rule.svg)](https://travis-ci.org/andrena/no-package-cycles-rule)
+[![Build Status](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule.svg)](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule)
 
 This Maven Enforcer Rule checks your project for package cycles. It fails the build if any package cycle is found, showing you the packages and classes involved in the cycle.
 
