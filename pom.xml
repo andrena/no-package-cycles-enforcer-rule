@@ -5,7 +5,7 @@
 
 	<groupId>de.andrena.tools.nopackagecycles</groupId>
 	<artifactId>no-package-cycles-enforcer-rule</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.6</version>
 
 	<name>NoPackageCyclesEnforcerRule</name>
 	<description>A rule for the maven-enforcer-plugin that detects and prevents package cycles.</description>
