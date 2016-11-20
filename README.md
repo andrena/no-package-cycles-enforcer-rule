@@ -7,7 +7,7 @@ Usage: Add the following plugin to your POM:
 ```xml
 <plugin>
 	<artifactId>maven-enforcer-plugin</artifactId>
-	<version>1.2</version>
+	<version>1.4.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>de.andrena.tools.nopackagecycles</groupId>
