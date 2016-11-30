@@ -51,7 +51,6 @@ public class NoPackageCyclesRule implements EnforcerRule {
 	}
 
 	private String getPackageCycles(JDepend jdepend) {
-		@SuppressWarnings("unchecked")
 		Collection<JavaPackage> packages = jdepend.getPackages();
 		return new PackageCycleOutput(new ArrayList<JavaPackage>(packages)).getOutput();
 	}

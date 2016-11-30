@@ -1,30 +1,27 @@
 package de.andrena.tools.nopackagecycles;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import jdepend.framework.JavaPackage;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.StrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
+import jdepend.framework.JavaPackage;
+
 public class PackageCycleCollector {
 
 	public List<Set<JavaPackage>> collectCycles(List<JavaPackage> packages) {
-		DirectedGraph<JavaPackage, DefaultEdge> graph = new DefaultDirectedGraph<JavaPackage, DefaultEdge>(
-				DefaultEdge.class);
+		DirectedGraph<JavaPackage, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		addVerticesToGraph(packages, graph);
 		addEdgesToGraph(packages, graph);
 		return collectCycles(graph);
 	}
 
 	private List<Set<JavaPackage>> collectCycles(DirectedGraph<JavaPackage, DefaultEdge> graph) {
-		List<Set<JavaPackage>> stronglyConnectedSets = new StrongConnectivityInspector<JavaPackage, DefaultEdge>(graph)
-				.stronglyConnectedSets();
+		List<Set<JavaPackage>> stronglyConnectedSets = new StrongConnectivityInspector<>(graph).stronglyConnectedSets();
 		removeSingletonSets(stronglyConnectedSets);
 		return stronglyConnectedSets;
 	}
@@ -39,10 +36,9 @@ public class PackageCycleCollector {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void addEdgesToGraph(List<JavaPackage> packages, DirectedGraph<JavaPackage, DefaultEdge> graph) {
 		for (JavaPackage javaPackage : packages) {
-			for (JavaPackage efferent : (Collection<JavaPackage>) javaPackage.getEfferents()) {
+			for (JavaPackage efferent : javaPackage.getEfferents()) {
 				graph.addEdge(javaPackage, efferent);
 			}
 		}

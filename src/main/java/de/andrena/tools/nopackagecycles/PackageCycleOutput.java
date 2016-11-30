@@ -84,7 +84,6 @@ public class PackageCycleOutput {
 
 	private List<JavaClass> getOrderedDependentClasses(JavaPackage javaPackage, JavaPackage cyclicPackage) {
 		List<JavaClass> dependentClasses = new ArrayList<JavaClass>();
-		@SuppressWarnings("unchecked")
 		Collection<JavaClass> allClasses = javaPackage.getClasses();
 		for (JavaClass javaClass : allClasses) {
 			if (javaClass.getImportedPackages().contains(cyclicPackage)) {
