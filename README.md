@@ -12,7 +12,7 @@ Usage: Add the following plugin to your POM:
 		<dependency>
 			<groupId>de.andrena.tools.nopackagecycles</groupId>
 			<artifactId>no-package-cycles-enforcer-rule</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.7</version>
 		</dependency>
 	</dependencies>
 	<executions>
@@ -31,6 +31,19 @@ Usage: Add the following plugin to your POM:
 	</executions>
 </plugin>
 ```
+
+If you want to exclude tests from cycle checking you can use the parameter `includeTests` which is set to true by default:
+```
+				...
+				<rules>
+					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+						<includeTests>false</includeTests>
+					</NoPackageCyclesRule>
+				</rules>
+				...
+
+```
+
 
 See also:
 * The original version by Daniel Seidewitz on [Stackoverflow](http://stackoverflow.com/questions/3416547/maven-jdepend-fail-build-with-cycles). Improved by showing all packages afflicted with cycles and the corresponding classes importing the conflicting packages.
