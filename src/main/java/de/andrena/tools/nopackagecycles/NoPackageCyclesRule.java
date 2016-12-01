@@ -15,6 +15,8 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 
 public class NoPackageCyclesRule implements EnforcerRule {
 
+	private boolean includeTests = true;
+
 	public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
 		try {
 			executePackageCycleCheckIfNecessary(helper);
@@ -25,9 +27,9 @@ public class NoPackageCyclesRule implements EnforcerRule {
 		}
 	}
 
-	private void executePackageCycleCheckIfNecessary(EnforcerRuleHelper helper) throws ExpressionEvaluationException,
-			IOException, EnforcerRuleException {
-		DirectoriesWithClasses directories = new DirectoriesWithClasses(helper);
+	private void executePackageCycleCheckIfNecessary(EnforcerRuleHelper helper)
+			throws ExpressionEvaluationException, IOException, EnforcerRuleException {
+		DirectoriesWithClasses directories = new DirectoriesWithClasses(helper, includeTests);
 		if (directories.directoriesWithClassesFound()) {
 			executePackageCycleCheck(directories);
 		} else {
@@ -65,5 +67,9 @@ public class NoPackageCyclesRule implements EnforcerRule {
 
 	public boolean isResultValid(EnforcerRule arg0) {
 		return false;
+	}
+
+	public void setIncludeTests(boolean includeTests) {
+		this.includeTests = includeTests;
 	}
 }

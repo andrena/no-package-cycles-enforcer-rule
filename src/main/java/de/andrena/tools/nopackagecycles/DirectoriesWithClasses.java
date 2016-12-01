@@ -17,9 +17,11 @@ public class DirectoriesWithClasses implements Iterable<File>{
 
 	private final List<File> directories = new LinkedList<File>();
 	
-	public DirectoriesWithClasses(EnforcerRuleHelper helper) throws ExpressionEvaluationException {
+	public DirectoriesWithClasses(EnforcerRuleHelper helper, boolean includeTests) throws ExpressionEvaluationException {
 		addDirectoryIfExists(helper, MAVEN_PROJECT_BUILD_OUTPUT_DIRECTORY_VAR);
-		addDirectoryIfExists(helper, MAVEN_PROJECT_BUILD_TEST_OUTPUT_DIRECTORY_VAR);
+		if (includeTests) {
+			addDirectoryIfExists(helper, MAVEN_PROJECT_BUILD_TEST_OUTPUT_DIRECTORY_VAR);
+		}
 	}
 
 	private void addDirectoryIfExists(EnforcerRuleHelper helper, String variable)
@@ -37,6 +39,7 @@ public class DirectoriesWithClasses implements Iterable<File>{
 		return !directories.isEmpty();
 	}
 
+	@Override
 	public Iterator<File> iterator() {
 		return unmodifiableList(directories).iterator();
 	}

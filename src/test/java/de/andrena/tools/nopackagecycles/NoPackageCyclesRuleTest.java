@@ -72,8 +72,8 @@ public class NoPackageCyclesRuleTest {
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
 		assertThat(infoLogs, hasSize(3));
-		assertThat(infoLogs.get(0), is("Directory " + nonExistentClassesFolder.getAbsolutePath() + " could not be found."));
-		assertThat(infoLogs.get(1), is("Directory " + nonExistentTestClassesFolder.getAbsolutePath() + " could not be found."));
+		assertThat(infoLogs.get(0),	is("Directory " + nonExistentClassesFolder.getAbsolutePath() + " could not be found."));
+		assertThat(infoLogs.get(1),	is("Directory " + nonExistentTestClassesFolder.getAbsolutePath() + " could not be found."));
 		assertThat(infoLogs.get(2), is("No directories with classes to check for cycles found."));
 	}
 
@@ -98,8 +98,17 @@ public class NoPackageCyclesRuleTest {
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
 		assertThat(infoLogs, hasSize(2));
-		assertThat(infoLogs.get(0), is("Adding directory " + new File(temporaryFolder.getRoot(), "classes").getAbsolutePath() + " for package cycles search."));
-		assertThat(infoLogs.get(1), is("Adding directory " + new File(temporaryFolder.getRoot(), "test-classes").getAbsolutePath() + " for package cycles search."));
+		assertThat(infoLogs.get(0), is("Adding directory " + classesFolder().getAbsolutePath() + " for package cycles search."));
+		assertThat(infoLogs.get(1), is("Adding directory " + testClassesFolder().getAbsolutePath() + " for package cycles search."));
+	}
+
+	@Test
+	public void execute_CanExcludeTests() throws Exception {
+		rule.setIncludeTests(false);
+		rule.execute(helper);
+		List<String> infoLogs = helper.getLogMock().getInfo();
+		assertThat(infoLogs, hasSize(1));
+		assertThat(infoLogs.get(0), is("Adding directory " + classesFolder().getAbsolutePath() + " for package cycles search."));
 	}
 
 	@Test
@@ -109,7 +118,7 @@ public class NoPackageCyclesRuleTest {
 		rule.execute(helper);
 		List<String> infoLogs = helper.getLogMock().getInfo();
 		assertThat(infoLogs, hasSize(2));
-		assertThat(infoLogs.get(0), is("Adding directory " + new File(temporaryFolder.getRoot(), "classes").getAbsolutePath() + " for package cycles search."));
+		assertThat(infoLogs.get(0), is("Adding directory " + classesFolder().getAbsolutePath() + " for package cycles search."));
 		assertThat(infoLogs.get(1), is("Directory " + nonExistentTestClassesDir.getAbsolutePath() + " could not be found."));
 	}
 
@@ -119,5 +128,13 @@ public class NoPackageCyclesRuleTest {
 		expectedException.expect(EnforcerRuleException.class);
 		expectedException.expectMessage(containsString("There are package cycles"));
 		rule.execute(helper);
+	}
+
+	private File testClassesFolder() {
+		return new File(temporaryFolder.getRoot(), "test-classes");
+	}
+
+	private File classesFolder() {
+		return new File(temporaryFolder.getRoot(), "classes");
 	}
 }
