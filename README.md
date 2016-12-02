@@ -33,7 +33,7 @@ Usage: Add the following plugin to your POM:
 ```
 
 If you want to exclude tests from cycle checking you can use the parameter `includeTests` which is set to true by default:
-```
+```xml
 				...
 				<rules>
 					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
