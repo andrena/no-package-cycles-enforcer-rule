@@ -98,7 +98,6 @@
 						<configuration>
 							<rules>
 								<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
-									<includeTests>false</includeTests>
 								</NoPackageCyclesRule>
 							</rules>
 						</configuration>
