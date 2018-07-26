@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaPackage;
+import jdepend.framework.PackageFilter;
 
 import org.apache.maven.enforcer.rule.api.EnforcerRule;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
@@ -16,6 +18,8 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 public class NoPackageCyclesRule implements EnforcerRule {
 
 	private boolean includeTests = true;
+	private List<String> includedPackages = new ArrayList<>();
+	private List<String> excludedPackages = new ArrayList<>();
 
 	public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
 		try {
@@ -49,7 +53,9 @@ public class NoPackageCyclesRule implements EnforcerRule {
 	}
 
 	protected JDepend createJDepend() {
-		return new JDepend();
+		return new JDepend(PackageFilter.all()
+				.including(includedPackages)
+				.excluding(excludedPackages));
 	}
 
 	private String getPackageCycles(JDepend jdepend) {
@@ -72,4 +78,13 @@ public class NoPackageCyclesRule implements EnforcerRule {
 	public void setIncludeTests(boolean includeTests) {
 		this.includeTests = includeTests;
 	}
+
+	public void setIncludedPackages(List<String> includedPackages) {
+		this.includedPackages = includedPackages;
+	}
+
+	public void setExcludedPackages(List<String> excludedPackages) {
+		this.excludedPackages = excludedPackages;
+	}
+
 }
