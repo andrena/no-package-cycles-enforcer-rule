@@ -6,69 +6,68 @@ Usage: Add the following plugin to your POM:
 
 ```xml
 <plugin>
-	<artifactId>maven-enforcer-plugin</artifactId>
-	<version>1.4.1</version>
-	<dependencies>
-		<dependency>
-			<groupId>de.andrena.tools.nopackagecycles</groupId>
-			<artifactId>no-package-cycles-enforcer-rule</artifactId>
-			<version>1.0.9</version>
-		</dependency>
-	</dependencies>
-	<executions>
-		<execution>
-			<id>enforce-no-package-cycles</id>
-			<goals>
-				<goal>enforce</goal>
-			</goals>
-			<phase>test</phase>
-			<configuration>
-				<rules>
-					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule" />
-				</rules>
-			</configuration>
-		</execution>
-	</executions>
+    <artifactId>maven-enforcer-plugin</artifactId>
+    <version>1.4.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>de.andrena.tools.nopackagecycles</groupId>
+            <artifactId>no-package-cycles-enforcer-rule</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+    </dependencies>
+    <executions>
+        <execution>
+            <id>enforce-no-package-cycles</id>
+            <goals>
+                <goal>enforce</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+                <rules>
+                    <NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule" />
+                </rules>
+            </configuration>
+        </execution>
+    </executions>
 </plugin>
 ```
 
 If you want to exclude tests from cycle checking, you can use the parameter `includeTests` which is set to true by default:
 ```xml
-				...
-				<rules>
-					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
-						<includeTests>false</includeTests>
-					</NoPackageCyclesRule>
-				</rules>
-				...
+        ...
+        <rules>
+            <NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                <includeTests>false</includeTests>
+            </NoPackageCyclesRule>
+        </rules>
+        ...
 ```
 
 If you want to exclude packages or restrict check to certain packages only, you can use `includedPackages` or `excludedPackages`:
-
-**:warning: only use this, if there is no other way! Once there are exceptions, the connection between those excluded packages will grow stronger and stronger, without notice!**
-
+**:warning: only use this, if there is no other way! Once there are exceptions, the connection between those excluded packages
+will grow stronger and stronger, without notice!**
 ```xml
-				...
-				<rules>
-					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
-                        <includedPackages>
-                            <includedPackage>myapp.code.good</includedPackage>
-                        </includedPackages>
-					</NoPackageCyclesRule>
-				</rules>
-				...
+        ...
+        <rules>
+            <NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                <includedPackages>
+                    <includedPackage>myapp.code.good</includedPackage>
+                </includedPackages>
+            </NoPackageCyclesRule>
+        </rules>
+        ...
 ```
 
 ```xml
-				...
-				<rules>
-					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
-                        <excludedPackages>
-                            <excludedPackage>myapp.code.bad</excludedPackage>
-                        </excludedPackages>
-					</NoPackageCyclesRule>
-				</rules>
-				...
+        ...
+        <rules>
+            <NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                <excludedPackages>
+                    <excludedPackage>myapp.code.bad</excludedPackage>
+                </excludedPackages>
+            </NoPackageCyclesRule>
+        </rules>
+        ...
 ```
 
 
