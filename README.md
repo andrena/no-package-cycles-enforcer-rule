@@ -2,11 +2,13 @@
 
 [![Build Status](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule.svg)](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule)
 
-## Documentation
+## About
 
 This Maven Enforcer Rule checks your project for package cycles. It fails the build if any package cycle is found, showing you the packages and classes involved in the cycle.
 
-Usage: Add the following plugin to your POM:
+## Usage
+
+Add the following plugin to your POM:
 
 ```xml
 <plugin>
@@ -36,7 +38,7 @@ Usage: Add the following plugin to your POM:
 </plugin>
 ```
 
-### Include test classes
+### Including test classes
 
 If you want to exclude tests from cycle checking, you can use the parameter `includeTests` which is set to true by default:
 ```xml
@@ -49,11 +51,13 @@ If you want to exclude tests from cycle checking, you can use the parameter `inc
         ...
 ```
 
-### Restrict scope
+### Restricting scope
 
-If you want to exclude packages or restrict check to certain packages only, you can use `includedPackages` or `excludedPackages`:
-**:warning: only use this, if there is no other way! Once there are exceptions, the connection between those excluded packages
+**:warning: Only use this, if there is no other way! Once there are exceptions, the connection between those excluded packages
 will grow stronger and stronger, without notice!**
+
+If you want to exclude packages or restrict check to certain packages only, you can use `includedPackages` or `excludedPackages` (although you really should not!):
+
 ```xml
         ...
         <rules>
@@ -83,3 +87,4 @@ will grow stronger and stronger, without notice!**
 * The original version by Daniel Seidewitz on [Stackoverflow](http://stackoverflow.com/questions/3416547/maven-jdepend-fail-build-with-cycles). Improved by showing all packages afflicted with cycles and the corresponding classes importing the conflicting packages.
 * [JDepend](https://github.com/clarkware/jdepend), the library being used to detect package cycles.
 * For more information about package cycles, see ["The Acyclic Dependencies Principle" by Robert C. Martin (Page 6)](http://www.objectmentor.com/resources/articles/granularity.pdf). 
+* The [Maven Enforcer Plugin](https://maven.apache.org/enforcer/maven-enforcer-plugin/)
