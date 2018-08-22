@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.andrena.tools.nopackagecycles</groupId>
     <artifactId>no-package-cycles-enforcer-rule</artifactId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.0.9</version>
 
     <name>NoPackageCyclesEnforcerRule</name>
     <description>A rule for the maven-enforcer-plugin that detects and prevents package cycles.</description>
@@ -15,7 +14,7 @@
         <connection>scm:git:git@github.com:andrena/no-package-cycles-enforcer-rule.git</connection>
         <developerConnection>scm:git:git@github.com:andrena/no-package-cycles-enforcer-rule.git</developerConnection>
         <url>git@github.com:andrena/no-package-cycles-enforcer-rule.git</url>
-        <tag>HEAD</tag>
+        <tag>no-package-cycles-enforcer-rule-1.0.9</tag>
     </scm>
 
     <licenses>
@@ -98,8 +97,7 @@
                         <phase>compile</phase>
                         <configuration>
                             <rules>
-                                <NoPackageCyclesRule
-                                        implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                                <NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
                                 </NoPackageCyclesRule>
                             </rules>
                         </configuration>
