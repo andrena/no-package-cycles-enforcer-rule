@@ -12,7 +12,7 @@ Usage: Add the following plugin to your POM:
 		<dependency>
 			<groupId>de.andrena.tools.nopackagecycles</groupId>
 			<artifactId>no-package-cycles-enforcer-rule</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
 		</dependency>
 	</dependencies>
 	<executions>
