@@ -35,14 +35,14 @@ public class NoPackageCyclesRule implements EnforcerRule {
 			throws ExpressionEvaluationException, IOException, EnforcerRuleException {
 		DirectoriesWithClasses directories = new DirectoriesWithClasses(helper, includeTests);
 		if (directories.directoriesWithClassesFound()) {
-			executePackageCycleCheck(directories);
+			executePackageCycleCheck(helper, directories);
 		} else {
 			helper.getLog().info("No directories with classes to check for cycles found.");
 		}
 	}
 
-	private void executePackageCycleCheck(Iterable<File> directories) throws IOException, EnforcerRuleException {
-		JDepend jdepend = createJDepend();
+	private void executePackageCycleCheck(EnforcerRuleHelper helper, Iterable<File> directories) throws IOException, EnforcerRuleException {
+		JDepend jdepend = createJDepend(helper);
 		for (File directory : directories) {
 			jdepend.addDirectory(directory.getAbsolutePath());
 		}
@@ -52,7 +52,13 @@ public class NoPackageCyclesRule implements EnforcerRule {
 		}
 	}
 
-	protected JDepend createJDepend() {
+	protected JDepend createJDepend(EnforcerRuleHelper helper) {
+		if (!includedPackages.isEmpty()) {
+			helper.getLog().warn("Package cycles rule check is restricted to check only these packages: " + includedPackages);
+		}
+		if (!excludedPackages.isEmpty()) {
+			helper.getLog().warn("These packages were excluded from package cycle rule check: " + excludedPackages);
+		}
 		return new JDepend(PackageFilter.all()
 				.including(includedPackages)
 				.excluding(excludedPackages));

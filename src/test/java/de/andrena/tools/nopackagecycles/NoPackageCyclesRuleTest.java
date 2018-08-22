@@ -11,6 +11,7 @@ import java.util.List;
 import jdepend.framework.JDepend;
 
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
+import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class NoPackageCyclesRuleTest {
 
 	private class NoPackageCyclesRuleMock extends NoPackageCyclesRule {
 		@Override
-		protected JDepend createJDepend() {
+		protected JDepend createJDepend(EnforcerRuleHelper helper) {
 			return jdependMock;
 		}
 	}
