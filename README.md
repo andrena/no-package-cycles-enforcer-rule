@@ -12,7 +12,7 @@ Usage: Add the following plugin to your POM:
 		<dependency>
 			<groupId>de.andrena.tools.nopackagecycles</groupId>
 			<artifactId>no-package-cycles-enforcer-rule</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 		</dependency>
 	</dependencies>
 	<executions>
@@ -32,7 +32,7 @@ Usage: Add the following plugin to your POM:
 </plugin>
 ```
 
-If you want to exclude tests from cycle checking you can use the parameter `includeTests` which is set to true by default:
+If you want to exclude tests from cycle checking, you can use the parameter `includeTests` which is set to true by default:
 ```xml
 				...
 				<rules>
@@ -41,7 +41,34 @@ If you want to exclude tests from cycle checking you can use the parameter `incl
 					</NoPackageCyclesRule>
 				</rules>
 				...
+```
 
+If you want to exclude packages or restrict check to certain packages only, you can use `includedPackages` or `excludedPackages`:
+
+**:warning: only use this, if there is no other way! Once there are exceptions, the connection between those excluded packages will grow stronger and stronger, without notice!**
+
+```xml
+				...
+				<rules>
+					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                        <includedPackages>
+                            <includedPackage>myapp.code.good</includedPackage>
+                        </includedPackages>
+					</NoPackageCyclesRule>
+				</rules>
+				...
+```
+
+```xml
+				...
+				<rules>
+					<NoPackageCyclesRule implementation="de.andrena.tools.nopackagecycles.NoPackageCyclesRule">
+                        <excludedPackages>
+                            <excludedPackage>myapp.code.bad</excludedPackage>
+                        </excludedPackages>
+					</NoPackageCyclesRule>
+				</rules>
+				...
 ```
 
 
