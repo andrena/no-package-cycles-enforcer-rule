@@ -1,6 +1,11 @@
 # no-package-cycles-enforcer-rule
 
-[![Build Status](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule.svg)](https://travis-ci.org/andrena/no-package-cycles-enforcer-rule)
+## Project status
+
+Since [JDepend isn't being maintained](https://github.com/clarkware/jdepend/issues/21) any longer and does not support
+java versions above 8, this project will not be maintained and users should consider to move to something else like for
+example ArchUnit, which has examples for package cycle tests
+[in their docs](https://www.archunit.org/userguide/html/000_Index.html#_slices).
 
 ## About
 
